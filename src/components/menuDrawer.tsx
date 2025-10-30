@@ -88,7 +88,7 @@ export const MenuDrawer = ({ isOpen, onClose, items = techMenu }: MenuDrawerProp
               <div
                 ref={scrollRef}
                 onScroll={updateFades}
-                className="max-h-[82vh] md:max-h-[70vh] overflow-y-auto no-scrollbar pr-1"
+                className="max-h-[82vh] md:max-h-[70vh] overflow-y-auto no-scrollbar pr-1 pb-4"
               >
                 <Menu items={items} />
               </div>
