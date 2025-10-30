@@ -1,73 +1,72 @@
-# React + TypeScript + Vite
+## Menu Component (React + TypeScript)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An accessible, nested menu with smooth, direction-aware slide transitions. It supports full keyboard navigation, screen readers, and responsive layouts.
 
-Currently, two official plugins are available:
+### Features
+- Smooth, direction-aware slide animations (60fps) with reduced-motion support
+- Intuitive back navigation and level history
+- Full keyboard support and proper ARIA roles
+- Responsive, modern visual design with hover states
+- Focus management on open and between levels
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Types
+```ts
+export interface MenuItem {
+  title: string
+  description?: string
+  icon: LucideIcon
+  path?: string
+  subMenu?: MenuItem[]
+}
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+export type Menu = MenuItem[]
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Quick Start
+```tsx
+import { useState } from 'react'
+import { MenuDrawer } from './src/components/menuDrawer'
+import { techMenu } from './src/data/techMenu'
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+export default function Example() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open Menu</button>
+      <MenuDrawer isOpen={open} onClose={() => setOpen(false)} items={techMenu} />
+    </>
+  )
+}
 ```
+
+### Props
+- `MenuDrawer`
+  - `isOpen: boolean` — whether the drawer is open
+  - `onClose: () => void` — called on overlay click, drag-to-close, or Escape
+  - `items?: Menu` — menu data (defaults to `techMenu`)
+
+### Keyboard
+- ArrowDown / ArrowUp: move between items
+- Home / End: jump to first/last item
+- Enter / Space / ArrowRight: open submenu
+- ArrowLeft / Backspace: go back a level
+- Escape: close drawer
+
+### Accessibility
+- Container: `role="menu"`, `aria-orientation="vertical"`, labeled for screen readers
+- Items: `role="menuitem"`, `aria-haspopup="menu"` when a submenu exists
+- Drawer: `role="dialog"`, `aria-modal="true"`, focus trapped to menu and returned to trigger on close
+
+### Customization
+- Adjust Tailwind classes for spacing, colors, borders
+- Supply any `LucideIcon` (or adapt the type) per `MenuItem`
+- Pass your own `Menu` data via the `items` prop
+
+### Sample Data
+See `src/data/techMenu.ts` for a comprehensive nested example.
+
+---
+
+## Project Notes
+- Built with Vite + React + TypeScript
+- Dev: `npm run dev`  •  Build: `npm run build`  •  Preview: `npm run preview`

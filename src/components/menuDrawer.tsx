@@ -12,6 +12,8 @@ interface MenuDrawerProps {
 
 export const MenuDrawer = ({ isOpen, onClose, items = techMenu }: MenuDrawerProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null)
+  const dialogRef = useRef<HTMLDivElement | null>(null)
+  const openerRef = useRef<HTMLElement | null>(null)
   const [fadeTop, setFadeTop] = useState(0)
   const [fadeBottom, setFadeBottom] = useState(0)
 
@@ -27,7 +29,26 @@ export const MenuDrawer = ({ isOpen, onClose, items = techMenu }: MenuDrawerProp
 
   useEffect(() => {
     updateFades()
+    if (isOpen) {
+      openerRef.current = (document.activeElement as HTMLElement) ?? null
+      // focus the dialog container for immediate keyboard access
+      requestAnimationFrame(() => dialogRef.current?.focus())
+    } else {
+      // return focus to the opener when closed
+      openerRef.current?.focus()
+    }
   }, [isOpen])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        e.preventDefault()
+        onClose()
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [isOpen, onClose])
 
   return (
     <AnimatePresence>
@@ -36,9 +57,17 @@ export const MenuDrawer = ({ isOpen, onClose, items = techMenu }: MenuDrawerProp
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
-          transition={{ type: "spring", stiffness: 280, damping: 28 }}
+          transition={
+            typeof window !== "undefined" && window.matchMedia &&
+              window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? { duration: 0 }
+              : { type: "spring", stiffness: 280, damping: 28 }
+          }
           onClick={onClose}
           className="fixed inset-5 md:inset-0 z-50 flex items-end justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
         >
           <motion.div
             onClick={(e) => e.stopPropagation()}
@@ -49,6 +78,8 @@ export const MenuDrawer = ({ isOpen, onClose, items = techMenu }: MenuDrawerProp
             onDragEnd={(_, info) => {
               if (info.offset.y > 120 || info.velocity.y > 800) onClose()
             }}
+            ref={dialogRef}
+            tabIndex={-1}
           >
             <div className="flex justify-center items-center -mt-2 mb-3">
               <div className="h-1.5 w-10 rounded-full bg-gray-300" />
