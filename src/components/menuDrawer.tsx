@@ -38,11 +38,11 @@ export const MenuDrawer = ({ isOpen, onClose, items = techMenu }: MenuDrawerProp
           exit={{ y: "100%" }}
           transition={{ type: "spring", stiffness: 280, damping: 28 }}
           onClick={onClose}
-          className="fixed inset-5 z-50 flex items-end sm:items-center justify-center"
+          className="fixed inset-5 md:inset-0 z-50 flex items-end justify-center"
         >
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            className="w-[90vw] max-h-[90vh] min-h-auto overflow-hidden bg-white rounded-2xl border p-5"
+            className="w-[90vw] md:w-full md:max-w-[720px] lg:max-w-[840px] max-h-[90vh] md:max-h-[85vh] min-h-auto overflow-hidden bg-white rounded-2xl md:rounded-t-2xl md:rounded-b-none border shadow-xl p-5 pb-[max(1rem,env(safe-area-inset-bottom))]"
             drag="y"
             dragConstraints={{ top: 0, bottom: 240 }}
             dragElastic={0.12}
@@ -50,14 +50,14 @@ export const MenuDrawer = ({ isOpen, onClose, items = techMenu }: MenuDrawerProp
               if (info.offset.y > 120 || info.velocity.y > 800) onClose()
             }}
           >
-            <div className="flex justify-center items-center -mt-1 mb-3">
+            <div className="flex justify-center items-center -mt-2 mb-3">
               <div className="h-1.5 w-10 rounded-full bg-gray-300" />
             </div>
             <div className="relative">
               <div
                 ref={scrollRef}
                 onScroll={updateFades}
-                className="max-h-[82vh] overflow-y-auto no-scrollbar pr-1"
+                className="max-h-[82vh] md:max-h-[70vh] overflow-y-auto no-scrollbar pr-1"
               >
                 <Menu items={items} />
               </div>
