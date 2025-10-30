@@ -1,9 +1,16 @@
-// import { React } from 'react'
+import type { ButtonHTMLAttributes, PropsWithChildren } from "react"
 
-export const Button = () => {
+type ButtonProps = PropsWithChildren<
+  ButtonHTMLAttributes<HTMLButtonElement>
+>
+
+export const Button = ({ children, className = "", ...props }: ButtonProps) => {
   return (
-    <button className="px-4 py-2 bg-blue-500 text-white rounded-full hover:shadow-sm transition-all duration-300">
-      Open Menu
+    <button
+      className={`px-4 py-2 bg-blue-500 text-white rounded-full hover:shadow-sm transition-all duration-300 ${className}`}
+      {...props}
+    >
+      {children}
     </button>
   )
 }
